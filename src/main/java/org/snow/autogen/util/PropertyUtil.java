@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Copyright @ 2016QIANLONG.
- * All right reserved.
- * Class Name : org.snow.database.util
- * Description :
- * Author : gaoguoxiang
- * Date : 2016/8/3
+ * Created with IntelliJ IDEA.
+ * User: snowxuyu
+ * Date: 2016/8/3
+ * Time: 20:48
  */
 
 public class PropertyUtil {

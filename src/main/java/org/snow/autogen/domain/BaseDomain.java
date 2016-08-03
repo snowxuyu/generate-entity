@@ -1,19 +1,17 @@
 package org.snow.autogen.domain;
 
-/**
- * Copyright @ 2016QIANLONG.
- * All right reserved.
- * Class Name : org.snow.database.domain
- * Description :
- * Author : gaoguoxiang
- * Date : 2016/8/3
+/**  用于存放数据库解析实体类的数据
+ * Created with IntelliJ IDEA.
+ * User: snowxuyu
+ * Date: 2016/8/3
+ * Time: 20:48
  */
 
 public class BaseDomain {
 
-    private String columName;
-    private String columType;
-    private String remark;
+    private String columName; //列名称（字段/属性名称）
+    private String columType; //列类型（字段/属性类型）
+    private String remark; //注释
 
     public String getColumName() {
         return columName;
