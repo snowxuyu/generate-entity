@@ -60,9 +60,9 @@ public class AutoGenerate {
         String password = PropertyUtil.getValue("jdbc.password");
         rootDir = PropertyUtil.getValue("root.dir");
         entityPackageName = PropertyUtil.getValue("entityPackageName");
-        daoPackageName = PropertyUtil.getValue("daoPackageName");
-        serPackageName = PropertyUtil.getValue("serPackageName");
+        serPackageName = PropertyUtil.getValue("servicePackageName");
         implPackageName = PropertyUtil.getValue("implPackageName");
+        daoPackageName = PropertyUtil.getValue("daoPackageName");
         Connection conn;
 
         //删除生成目录

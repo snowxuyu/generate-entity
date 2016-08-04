@@ -9,13 +9,21 @@ jdbc.url=jdbc:mysql://127.0.0.1:3306/finance?createDatabaseIfNotExist=true&zeroD
 jdbc.driver=com.mysql.jdbc.Driver
 jdbc.username=root
 jdbc.password=tiger
+
 root.dir = f
 entityPackageName = org.snow.test.entity
-#配置文件（jdbc.properties）中 root.dir  entityPackageName不可为空   daoPackageName servicePackageName implPackageName可以为空
-#若 daoPackageName servicePackageName implPackageName 为空 则系统默认赋值为下面注释的值   若不为空则为设置的值
-#daoPackageName = org.snow.test.dao
-#servicePackageName = org.snow.test.service
-#implPackageName = org.snow.test.service.impl
+
+##############################################
+servicePackageName = org.snow.test.service
+implPackageName = org.snow.test.service.impl
+daoPackageName = org.snow.test.dao
+##############################################
+
+
+## root.dir  entityPackageName不可为空   daoPackageName servicePackageName implPackageName可以为空
+## 若 daoPackageName servicePackageName implPackageName 为空 则系统默认赋值为下面注释的值   若不为空则为设置的值
+
+
 
 
 #         ============================================================
@@ -25,3 +33,7 @@ entityPackageName = org.snow.test.entity
 #           文件配置参考此文件
 #
 #         ============================================================
+
+
+
+
