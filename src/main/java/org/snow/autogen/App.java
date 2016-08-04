@@ -75,7 +75,8 @@ public class App {
             System.out.println("==================================================");
             System.out.println("当前连接数据库为: " + dbmd.getDatabaseProductName()
                     + "\n数据库版本: " + dbmd.getDatabaseProductVersion()
-                    + "\n驱动版本: " + dbmd.getDriverVersion());
+                    + "\n驱动版本: " + dbmd.getDriverVersion()
+                    + "\n数据库名称: " + conn.getCatalog());
             System.out.println("==================================================");
 
             getTableStruct(conn);
