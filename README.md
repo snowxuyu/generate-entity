@@ -1,8 +1,8 @@
 # generate-entity
-该generate根据basic-core框架设计，可以反向生成和数据相关的entity、dao、service、impl、mapper  
+#该generate根据basic-core框架设计，可以反向生成和数据相关的entity、dao、service、impl、mapper
 
-对表的要求为xxx_yyy_zzz (t_sys_use_info) 系统会将xxx_yyy_zzz (t_sys_user_info) 表转换成实体类 YyyZzz.java (SysUserInfo.java)
-即默认去除第一个下划线之前的内容
+#对表的要求为xxx_yyy_zzz (t_sys_use_info) 系统会将xxx_yyy_zzz (t_sys_user_info) 表转换成实体类 YyyZzz.java (SysUserInfo.java)
+#即默认去除第一个下划线之前的内容
 
 
 jdbc.url=jdbc:mysql://127.0.0.1:3306/finance?createDatabaseIfNotExist=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
@@ -14,6 +14,7 @@ root.dir = f
 entityPackageName = org.snow.test.entity
 
 ##############################################
+    ##      下面3行配置可以省略        ##
 servicePackageName = org.snow.test.service
 implPackageName = org.snow.test.service.impl
 daoPackageName = org.snow.test.dao
