@@ -51,7 +51,6 @@ public class App {
             //获取数据库连接
             conn = DriverManager.getConnection(url, username, password);
 
-
             printInitInfo(conn);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("没有发现数据库驱动... " + e.getMessage());
