@@ -37,13 +37,19 @@ public class App {
         serPackageName = PropertyUtil.getValue("serPackageName");
         implPackageName = PropertyUtil.getValue("implPackageName");
         Connection conn;
+        
+        //删除生成目录
+        File file = new File(rootDir.toUpperCase()+":"+File.separator+"autogenerate");
+        file.mkdirs();
+        if (file.exists()) {
+            deleteDir(file);
+        }
 
         try {
             //加载驱动
             Class.forName(driver);
             //获取数据库连接
             conn = DriverManager.getConnection(url, username, password);
-
 
             printInitInfo(conn);
         } catch (ClassNotFoundException e) {
@@ -68,7 +74,8 @@ public class App {
             System.out.println("==================================================");
             System.out.println("当前连接数据库为: " + dbmd.getDatabaseProductName()
                     + "\n数据库版本: " + dbmd.getDatabaseProductVersion()
-                    + "\n驱动版本: " + dbmd.getDriverVersion());
+                    + "\n驱动版本: " + dbmd.getDriverVersion()
+                    + "\n数据库名称: " + conn.getCatalog());
             System.out.println("==================================================");
 
             getTableStruct(conn);
@@ -87,19 +94,17 @@ public class App {
      */
     private void getTableStruct(Connection conn) {
         ArrayList<BaseDomain> domainList = new ArrayList<BaseDomain>();
-        String tableName;
-        BaseDomain domain = null;
-        ResultSet tableSet = null;
-        ResultSet columSet = null;
-        DatabaseMetaData dbmd;
+        BaseDomain domain;
+        
         try {
-            dbmd = conn.getMetaData();
+            DatabaseMetaData dbmd = conn.getMetaData();
             //获取所有表名称
-            tableSet = dbmd.getTables(null, null, "%", new String[]{"TABLE"});
+            ResultSet tableSet = dbmd.getTables(null, null, "%", new String[]{"TABLE"});
             while (tableSet.next()) {
-                //获取每个表的结构
-                tableName = tableSet.getString("TABLE_NAME");
-                columSet = dbmd.getColumns(null, "%", tableName, "%");
+                //获取表名称
+                String tableName = tableSet.getString("TABLE_NAME");
+                //获取每个表的表结构
+                ResultSet columSet = dbmd.getColumns(null, "%", tableName, "%");
                 while (columSet.next()) {
                     domain = new BaseDomain();
                     domain.setColumName(columSet.getString("COLUMN_NAME"));
@@ -144,7 +149,6 @@ public class App {
         if (implPackageName == null || implPackageName.length() <= 0) {
             implPackageName = entityPackageName.substring(0, entityPackageName.lastIndexOf(".")).concat(".service.impl");
         }
-
 
         //创建文件夹
         File directory = new File(rootDir.toUpperCase() + ":" + File.separator + "autogenerate");
@@ -230,8 +234,8 @@ public class App {
                 String remark = domain.getRemark();
                 String javaType = sqlType2JavaType(domain.getColumType());
                 String fieldName = LineToHumpUtil.lineToHump(domain.getColumName());
-                javaSb.append("/** " + remark + " */\n");
-                javaSb.append("private " + javaType + " " + fieldName + ";\n");
+                javaSb.append("\t/** " + remark + " */\n");
+                javaSb.append("\tprivate " + javaType + " " + fieldName + ";\n");
             }
             javaSb.append("\n}");
 
@@ -242,6 +246,7 @@ public class App {
         }
 
     }
+
 
     /**
      * 生成dao文件
@@ -279,6 +284,7 @@ public class App {
         }
     }
 
+
     /**
      * 生成Service
      * @param className
@@ -313,6 +319,7 @@ public class App {
         }
 
     }
+
 
     /**
      *   生成impl
@@ -389,10 +396,11 @@ public class App {
         }
     }
 
+
     /**
      * 把数据写入文件
-     * @param sb
-     * @param file
+     * @param sb 数据
+     * @param file 文件
      */
     private void dataWriteFile(StringBuilder sb, File file) {
         try {
@@ -406,8 +414,6 @@ public class App {
         }
 
     }
-
-
 
 
     /**
@@ -461,7 +467,27 @@ public class App {
     }
 
 
-
+     /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     * @param dir 将要删除的文件目录
+     * @return
+     */
+    private boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            //递归删除目录中的子目录下
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // 目录此时为空，可以删除
+        return dir.delete();
+    }
+    
+    
     public static void main(String[] args) throws SQLException {
         //初始化信息
         Connection conn = new App().initParam();
