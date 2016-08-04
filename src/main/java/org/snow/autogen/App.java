@@ -37,6 +37,13 @@ public class App {
         serPackageName = PropertyUtil.getValue("serPackageName");
         implPackageName = PropertyUtil.getValue("implPackageName");
         Connection conn;
+        
+        //删除生成目录
+        File file = new File(rootDir.toUpperCase()+":"+File.separator+"autogenerate");
+        file.mkdirs();
+        if (file.exists()) {
+            deleteDir(file);
+        }
 
         try {
             //加载驱动
@@ -460,7 +467,27 @@ public class App {
         return "String";
     }
 
-
+     /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     * @param dir 将要删除的文件目录
+     * @return
+     */
+    private boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            //递归删除目录中的子目录下
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // 目录此时为空，可以删除
+        return dir.delete();
+    }
+    
+    
 
     public static void main(String[] args) throws SQLException {
         //初始化信息
