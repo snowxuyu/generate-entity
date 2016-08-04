@@ -19,11 +19,14 @@ public class PropertyUtil {
     static {
         InputStream in = null;
         try {
-            in = PropertyUtil.class.getResourceAsStream("/jdbc.properties");
+            in = PropertyUtil.class.getResourceAsStream("/generator.properties");
             prop.load(in);
             in.close();
         } catch (IOException e) {
-            throw new RuntimeException("读取 sql.properties 文件失败..." + e.getMessage());
+            System.out.println("读取 generator.properties 文件失败...");
+            throw new RuntimeException("读取 generator.properties 文件失败..." + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("generator.properties 文件不存在...");
         } finally {
             if (in != null) {
                 try {

@@ -13,13 +13,40 @@ import java.util.ArrayList;
 /**
  * Hello world!
  */
-public class App {
+public class AutoGenerate {
 
     String rootDir = null;
     String entityPackageName = null;
     String daoPackageName = null;
     String serPackageName = null;
     String implPackageName = null;
+
+    //私有构造方法
+    private AutoGenerate() {
+
+    }
+
+    //单例模式
+    private static class AutoGenerateHolder {
+        public static final AutoGenerate instance = new AutoGenerate();
+    }
+
+
+    public static void getInstanceInit() {
+        try {
+            //初始化信息
+            Connection conn = AutoGenerateHolder.instance.initParam();
+
+            conn.close();
+
+            System.out.println("文件生成完毕...");
+            System.out.println("success!!");
+        } catch (Exception e) {
+            System.out.println("文件生成失败...");
+            System.out.println("error!!");
+        }
+    }
+
     /**
      * 初始化数据库信息
      *
@@ -37,9 +64,9 @@ public class App {
         serPackageName = PropertyUtil.getValue("serPackageName");
         implPackageName = PropertyUtil.getValue("implPackageName");
         Connection conn;
-        
+
         //删除生成目录
-        File file = new File(rootDir.toUpperCase()+":"+File.separator+"autogenerate");
+        File file = new File(rootDir.toUpperCase() + ":" + File.separator + "autogenerate");
         file.mkdirs();
         if (file.exists()) {
             deleteDir(file);
@@ -95,7 +122,7 @@ public class App {
     private void getTableStruct(Connection conn) {
         ArrayList<BaseDomain> domainList = new ArrayList<BaseDomain>();
         BaseDomain domain;
-        
+
         try {
             DatabaseMetaData dbmd = conn.getMetaData();
             //获取所有表名称
@@ -152,7 +179,7 @@ public class App {
 
         //创建文件夹
         File directory = new File(rootDir.toUpperCase() + ":" + File.separator + "autogenerate");
-        if(!directory.exists()) {
+        if (!directory.exists()) {
             directory.mkdirs();
         }
 
@@ -179,9 +206,10 @@ public class App {
 
     /**
      * 生成java实体对象
+     *
      * @param domainList java属性字段
-     * @param tableName javabena对应的表名称
-     * @param directory 文件路径
+     * @param tableName  javabena对应的表名称
+     * @param directory  文件路径
      */
     private void autoGenerateJavaEntity(ArrayList<BaseDomain> domainList, String tableName, File directory, String entityPackageName) {
         Boolean dataFlag = true;
@@ -194,7 +222,7 @@ public class App {
             String className = tableName2EntityName(tableName);
 
             //创建java文件
-            String  filePath = directory + File.separator + "entity";
+            String filePath = directory + File.separator + "entity";
             File dir = new File(filePath);
             dir.mkdirs();
             String javaPath = filePath + File.separator + className;
@@ -209,7 +237,7 @@ public class App {
             javaSb.append("import org.framework.basic.entity.BaseEntity;\n");
 
             //判断类型 是否需要import
-            for (int i=0; i<domainList.size(); i++) {
+            for (int i = 0; i < domainList.size(); i++) {
                 BaseDomain domain = domainList.get(i);
                 String columType = domain.getColumType();
                 String javaType = sqlType2JavaType(columType);
@@ -225,7 +253,7 @@ public class App {
             javaSb.append("\n");
 
             javaSb.append("@Data\n");
-            javaSb.append("@Table(name=\""+ tableName +"\")\n");
+            javaSb.append("@Table(name=\"" + tableName + "\")\n");
             javaSb.append("public class " + className + " extends BaseEntity {\n");
 
 
@@ -250,10 +278,11 @@ public class App {
 
     /**
      * 生成dao文件
-     * @param className  类名
-     * @param directory 文件路径
+     *
+     * @param className         类名
+     * @param directory         文件路径
      * @param entityPackageName 实体包名称
-     * @param daoPackageName dao包名称
+     * @param daoPackageName    dao包名称
      */
     private void autoGenerateJavaDao(String className, File directory, String entityPackageName, String daoPackageName) {
         StringBuilder javaDaoSb = new StringBuilder();
@@ -263,7 +292,7 @@ public class App {
             String dirPath = directory + File.separator + "dao";
             File dir = new File(dirPath);
             dir.mkdirs();
-            String  daoPath = dirPath + File.separator + className;
+            String daoPath = dirPath + File.separator + className;
             File file = new File(daoPath + "Dao.java");
             file.createNewFile();
 
@@ -287,6 +316,7 @@ public class App {
 
     /**
      * 生成Service
+     *
      * @param className
      * @param directory
      * @param entityPackageName
@@ -298,7 +328,7 @@ public class App {
             String dirPath = directory + File.separator + "ser";
             File dir = new File(dirPath);
             dir.mkdirs();
-            String  serPath = dirPath + File.separator + className;
+            String serPath = dirPath + File.separator + className;
             File file = new File(serPath + "Service.java");
             file.createNewFile();
 
@@ -322,7 +352,8 @@ public class App {
 
 
     /**
-     *   生成impl
+     * 生成impl
+     *
      * @param className
      * @param directory
      * @param entityPackageName
@@ -336,7 +367,7 @@ public class App {
             String dirPath = directory + File.separator + "impl";
             File dir = new File(dirPath);
             dir.mkdirs();
-            String  serPath = dirPath + File.separator + className;
+            String serPath = dirPath + File.separator + className;
             File file = new File(serPath + "ServiceImpl.java");
             file.createNewFile();
 
@@ -363,10 +394,11 @@ public class App {
 
     /**
      * 生成Mapper文件 xml
-     * @param className 实体类名称
-     * @param directory 文件路径
+     *
+     * @param className         实体类名称
+     * @param directory         文件路径
      * @param entityPackageName 实体类包名
-     * @param daoPackageName dao包名
+     * @param daoPackageName    dao包名
      */
     private void autoGenerateMapperXml(String className, File directory, String entityPackageName, String daoPackageName) {
         StringBuilder xmlSb = new StringBuilder();
@@ -376,7 +408,7 @@ public class App {
             String dirPath = directory + File.separator + "xml";
             File dir = new File(dirPath);
             dir.mkdirs();
-            String  xmlPath = dirPath + File.separator + className;
+            String xmlPath = dirPath + File.separator + className;
             File file = new File(xmlPath + "Mapper.xml");
             file.createNewFile();
 
@@ -399,7 +431,8 @@ public class App {
 
     /**
      * 把数据写入文件
-     * @param sb 数据
+     *
+     * @param sb   数据
      * @param file 文件
      */
     private void dataWriteFile(StringBuilder sb, File file) {
@@ -432,7 +465,6 @@ public class App {
     }
 
 
-
     /**
      * 功能：获得列的数据类型
      *
@@ -444,7 +476,7 @@ public class App {
         if (sqlType.equalsIgnoreCase("bit")) {
             return "Boolean";
         } else if (sqlType.equalsIgnoreCase("tinyint") || sqlType.equalsIgnoreCase("smallint")
-                    || sqlType.equalsIgnoreCase("int")) {
+                || sqlType.equalsIgnoreCase("int")) {
             return "Integer";
         } else if (sqlType.equalsIgnoreCase("bigint")) {
             return "Long";
@@ -467,8 +499,9 @@ public class App {
     }
 
 
-     /**
+    /**
      * 递归删除目录下的所有文件及子目录下所有文件
+     *
      * @param dir 将要删除的文件目录
      * @return
      */
@@ -476,7 +509,7 @@ public class App {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //递归删除目录中的子目录下
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]));
                 if (!success) {
                     return false;
@@ -486,16 +519,4 @@ public class App {
         // 目录此时为空，可以删除
         return dir.delete();
     }
-    
-    
-    public static void main(String[] args) throws SQLException {
-        //初始化信息
-        Connection conn = new App().initParam();
-
-        conn.close();
-
-        System.out.println("文件生成完毕...");
-        System.out.println("success!!");
-    }
-
 }
