@@ -21,6 +21,8 @@ public class AutoGenerate {
     String serPackageName = null;
     String implPackageName = null;
 
+    static String genPath = "";
+
     //私有构造方法
     private AutoGenerate() {
 
@@ -40,6 +42,7 @@ public class AutoGenerate {
             conn.close();
 
             System.out.println("文件生成完毕...");
+            System.out.println("<<<-------文件所在路径为------->>>: " + genPath);
             System.out.println("success!!");
         } catch (Exception e) {
             System.out.println("文件生成失败...");
@@ -178,7 +181,8 @@ public class AutoGenerate {
         }
 
         //创建文件夹
-        File directory = new File(rootDir.toUpperCase() + ":" + File.separator + "autogenerate");
+        genPath = rootDir.toUpperCase() + ":" + File.separator + "autogenerate";
+        File directory = new File(genPath);
         if (!directory.exists()) {
             directory.mkdirs();
         }
