@@ -95,19 +95,17 @@ public class App {
      */
     private void getTableStruct(Connection conn) {
         ArrayList<BaseDomain> domainList = new ArrayList<BaseDomain>();
-        String tableName;
-        BaseDomain domain = null;
-        ResultSet tableSet = null;
-        ResultSet columSet = null;
-        DatabaseMetaData dbmd;
+        BaseDomain domain;
+        
         try {
-            dbmd = conn.getMetaData();
+            DatabaseMetaData dbmd = conn.getMetaData();
             //获取所有表名称
-            tableSet = dbmd.getTables(null, null, "%", new String[]{"TABLE"});
+            ResultSet tableSet = dbmd.getTables(null, null, "%", new String[]{"TABLE"});
             while (tableSet.next()) {
-                //获取每个表的结构
-                tableName = tableSet.getString("TABLE_NAME");
-                columSet = dbmd.getColumns(null, "%", tableName, "%");
+                //获取表名称
+                String tableName = tableSet.getString("TABLE_NAME");
+                //获取每个表的表结构
+                ResultSet columSet = dbmd.getColumns(null, "%", tableName, "%");
                 while (columSet.next()) {
                     domain = new BaseDomain();
                     domain.setColumName(columSet.getString("COLUMN_NAME"));
@@ -152,7 +150,6 @@ public class App {
         if (implPackageName == null || implPackageName.length() <= 0) {
             implPackageName = entityPackageName.substring(0, entityPackageName.lastIndexOf(".")).concat(".service.impl");
         }
-
 
         //创建文件夹
         File directory = new File(rootDir.toUpperCase() + ":" + File.separator + "autogenerate");
@@ -251,6 +248,7 @@ public class App {
 
     }
 
+
     /**
      * 生成dao文件
      * @param className  类名
@@ -287,6 +285,7 @@ public class App {
         }
     }
 
+
     /**
      * 生成Service
      * @param className
@@ -321,6 +320,7 @@ public class App {
         }
 
     }
+
 
     /**
      *   生成impl
@@ -397,10 +397,11 @@ public class App {
         }
     }
 
+
     /**
      * 把数据写入文件
-     * @param sb
-     * @param file
+     * @param sb 数据
+     * @param file 文件
      */
     private void dataWriteFile(StringBuilder sb, File file) {
         try {
@@ -414,8 +415,6 @@ public class App {
         }
 
     }
-
-
 
 
     /**
@@ -468,6 +467,7 @@ public class App {
         return "String";
     }
 
+
      /**
      * 递归删除目录下的所有文件及子目录下所有文件
      * @param dir 将要删除的文件目录
@@ -489,7 +489,6 @@ public class App {
     }
     
     
-
     public static void main(String[] args) throws SQLException {
         //初始化信息
         Connection conn = new App().initParam();
