@@ -237,8 +237,8 @@ public class App {
                 String remark = domain.getRemark();
                 String javaType = sqlType2JavaType(domain.getColumType());
                 String fieldName = LineToHumpUtil.lineToHump(domain.getColumName());
-                javaSb.append("/** " + remark + " */\n");
-                javaSb.append("private " + javaType + " " + fieldName + ";\n");
+                javaSb.append("\t/** " + remark + " */\n");
+                javaSb.append("\tprivate " + javaType + " " + fieldName + ";\n");
             }
             javaSb.append("\n}");
 
