@@ -7,7 +7,7 @@ jdbc.driver=com.mysql.jdbc.Driver
 jdbc.username=root
 jdbc.password=tiger
 
-root.dir = f
+root.dir = f    //生成文件所在盘符
 entityPackageName = org.snow.test.entity
 
 ##############################################
