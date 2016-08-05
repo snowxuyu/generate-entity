@@ -15,13 +15,12 @@ import java.util.ArrayList;
  */
 public class AutoGenerate {
 
-    String rootDir = null;
-    String entityPackageName = null;
-    String daoPackageName = null;
-    String serPackageName = null;
-    String implPackageName = null;
-
-    static String genPath = "";
+    private String rootDir;
+    private String entityPackageName;
+    private String daoPackageName;
+    private String serPackageName;
+    private String implPackageName;
+    private static String genPath = "";
 
     //私有构造方法
     private AutoGenerate() {
