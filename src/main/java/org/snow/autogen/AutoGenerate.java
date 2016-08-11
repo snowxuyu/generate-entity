@@ -265,6 +265,12 @@ public class AutoGenerate {
                 String remark = domain.getRemark();
                 String javaType = sqlType2JavaType(domain.getColumType());
                 String fieldName = LineToHumpUtil.lineToHump(domain.getColumName());
+                //过滤 id createTime createUser updateTime updateUser
+                if ("id".equalsIgnoreCase(fieldName) || "createTime".equalsIgnoreCase(fieldName)
+                        || "createName".equalsIgnoreCase(fieldName) || "updateTime".equalsIgnoreCase(fieldName)
+                        || "updateName".equalsIgnoreCase(fieldName)) {
+                    continue;
+                }
                 javaSb.append("\t/** " + remark + " */\n");
                 javaSb.append("\tprivate " + javaType + " " + fieldName + ";\n");
             }
