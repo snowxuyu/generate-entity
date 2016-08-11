@@ -15,13 +15,12 @@ import java.util.ArrayList;
  */
 public class AutoGenerate {
 
-    String rootDir = null;
-    String entityPackageName = null;
-    String daoPackageName = null;
-    String serPackageName = null;
-    String implPackageName = null;
-
-    static String genPath = "";
+    private String rootDir;
+    private String entityPackageName;
+    private String daoPackageName;
+    private String serPackageName;
+    private String implPackageName;
+    private static String genPath = "";
 
     //私有构造方法
     private AutoGenerate() {
@@ -266,6 +265,13 @@ public class AutoGenerate {
                 String remark = domain.getRemark();
                 String javaType = sqlType2JavaType(domain.getColumType());
                 String fieldName = LineToHumpUtil.lineToHump(domain.getColumName());
+
+                //过滤 id createTime createName updateTime updateName
+                if ("id".equals(fieldName) || "createTime".equals(fieldName)
+                        || "createName".equals(fieldName) || "updateTime".equals(fieldName)
+                        || "updateName".equals(fieldName)) {
+                    continue ;
+                }
                 javaSb.append("\t/** " + remark + " */\n");
                 javaSb.append("\tprivate " + javaType + " " + fieldName + ";\n");
             }
