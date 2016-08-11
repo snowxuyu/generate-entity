@@ -266,9 +266,9 @@ public class AutoGenerate {
                 String javaType = sqlType2JavaType(domain.getColumType());
                 String fieldName = LineToHumpUtil.lineToHump(domain.getColumName());
                 //过滤 id createTime createName updateTime updateName
-                if ("id".equalsIgnoreCase(fieldName) || "createTime".equalsIgnoreCase(fieldName)
-                        || "createName".equalsIgnoreCase(fieldName) || "updateTime".equalsIgnoreCase(fieldName)
-                        || "updateName".equalsIgnoreCase(fieldName)) {
+                if ("id".equals(fieldName) || "createTime".equals(fieldName)
+                        || "createName".equals(fieldName) || "updateTime".equals(fieldName)
+                        || "updateName".equals(fieldName)) {
                     continue;
                 }
                 javaSb.append("\t/** " + remark + " */\n");
