@@ -26,7 +26,7 @@ public class LineToHumpUtil {
 
     /**下划线转驼峰*/
     public static String lineToHump(String str){
-        str = str.toLowerCase();
+        //str = str.toLowerCase();
         Matcher matcher = linePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
         while(matcher.find()){
