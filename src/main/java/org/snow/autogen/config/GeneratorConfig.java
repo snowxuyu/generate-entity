@@ -28,6 +28,7 @@ public class GeneratorConfig {
     private String serPackageName;
     private String implPackageName;
     private String controllerPackageName;
+    private String dtoPackageName;
     private static String genPath = "";  //文件目录
     private final String DEFAULT_PATH = "autogenerator"; //子文件夹名称
 
@@ -92,6 +93,7 @@ public class GeneratorConfig {
         implPackageName = PropertyUtil.getValue("implPackageName");
         daoPackageName = PropertyUtil.getValue("daoPackageName");
         controllerPackageName = PropertyUtil.getValue("controllerPackageName");
+        dtoPackageName = PropertyUtil.getValue("dtoPackageName");
 
         //删除生成目录
         File file = new File(rootDir.toUpperCase() + ":" + File.separator + DEFAULT_PATH);
@@ -215,7 +217,11 @@ public class GeneratorConfig {
         }
 
         if (controllerPackageName == null || controllerPackageName.length() <= 0) {
-            controllerPackageName = packageName.concat("controller");
+            controllerPackageName = packageName.concat(".controller");
+        }
+
+        if (dtoPackageName == null || dtoPackageName.length() <= 0) {
+            dtoPackageName = packageName.concat(".dto");
         }
 
         //创建文件夹
@@ -235,14 +241,17 @@ public class GeneratorConfig {
         //生成java 实体
         autoGenerateJavaEntity(entityName, domainList, tableName, directory, entityPackageName);
 
+        //生成java Dto
+        autoGenerateJavaDto(entityName,  directory, entityPackageName, dtoPackageName);
+
         //生成dao文件
         autoGenerateJavaDao(entityName, directory, entityPackageName, daoPackageName);
 
         //生成Service文件
-        autoGenerateJavaSer(entityName, directory, entityPackageName, serPackageName);
+        autoGenerateJavaSer(entityName, directory, entityPackageName, dtoPackageName, lowEntityName, serPackageName);
 
         //生成impl
-        autoGenerateJavaImpl(entityName, directory, lowEntityName, entityPackageName, daoPackageName, serPackageName, implPackageName);
+        autoGenerateJavaImpl(entityName, directory, lowEntityName, entityPackageName, dtoPackageName, daoPackageName, serPackageName, implPackageName, domainList);
 
         //生成controller
         autoGenerateJavaController(entityName, directory, lowEntityName, entityPackageName, serPackageName, controllerPackageName);
@@ -282,13 +291,30 @@ public class GeneratorConfig {
                 importSb.append("import java.math.BigDecimal;\n");
                 bigdFlag = false;
             }
-            sb.append("/** " + domain.getRemark() + " */\n" + "private " + sqlType2JavaType(domain.getColumType()) + " " + LineToHumpUtil.lineToHump(domain.getColumName()) + "\n");
+            sb.append("\t/** " + domain.getRemark() + " */\n" + "\tprivate " + sqlType2JavaType(domain.getColumType()) + " " + LineToHumpUtil.lineToHump(domain.getColumName()) + ";\n");
         }
         map.put("javaTypeField", sb.toString());
         map.put("requeireImport", importSb.toString());
 
         String filePath = directory + File.separator + entityPackageName.replace(".", File.separator) + File.separator;
         FileTemplateUtil.replaceTemplateFile("DemoEntity", entityName, filePath, map);
+    }
+
+
+    /**
+     * 生成DTO文件
+     * @param entityName
+     * @param directory
+     * @param entityPackageName
+     * @param dtoPackageName
+     */
+    private void autoGenerateJavaDto(String entityName, File directory, String entityPackageName, String dtoPackageName) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("entityPackageName", entityPackageName);
+        map.put("dtoPackageName", dtoPackageName);
+        map.put("entityName", entityName);
+        String filePath = directory + File.separator + dtoPackageName.replace(".", File.separator) + File.separator;
+        FileTemplateUtil.replaceTemplateFile("DemoDto", entityName + "Dto", filePath, map);
     }
 
 
@@ -314,9 +340,11 @@ public class GeneratorConfig {
      * @param entityName
      * @param directory
      */
-    private void autoGenerateJavaSer(String entityName, File directory, String entityPackageName, String serPackageName) {
+    private void autoGenerateJavaSer(String entityName, File directory, String entityPackageName, String dtoPackageName, String lowEntityName, String serPackageName) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("entityPackageName", entityPackageName);
+        map.put("dtoPackageName", dtoPackageName);
+        map.put("low_entityName", lowEntityName);
         map.put("serPackageName", serPackageName);
         map.put("entityName", entityName);
         String filePath = directory + File.separator + serPackageName.replace(".", File.separator) + File.separator;
@@ -331,15 +359,26 @@ public class GeneratorConfig {
      * @param directory
      */
     private void autoGenerateJavaImpl(String entityName, File directory, String lowEntityName,
-                                      String entityPackageName, String daoPackageName, String serPackageName, String implPackageName) {
-
+                                      String entityPackageName, String dtoPackageName, String daoPackageName, String serPackageName, String implPackageName, List<BaseDomain> domainList) {
+        StringBuilder sb = new StringBuilder();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("entityPackageName", entityPackageName);
+        map.put("dtoPackageName", dtoPackageName);
         map.put("daoPackageName", daoPackageName);
         map.put("serPackageName", serPackageName);
         map.put("implPackageName", implPackageName);
         map.put("entityName", entityName);
         map.put("low_entityName", lowEntityName);
+        for (BaseDomain domain : domainList) {
+            if ("id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
+                    || "create_name".equals(domain.getColumName()) || "update_time".equals(domain.getColumName())
+                    || "update_name".equals(domain.getColumName())) {
+                continue;
+            }
+
+            sb.append("\t\t" +lowEntityName + ".set" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "(" + lowEntityName + "Dto.get" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "());\n");
+        }
+        map.put("setPropertiesField", sb.toString());
         String filePath = directory + File.separator + implPackageName.replace(".", File.separator) + File.separator;
         FileTemplateUtil.replaceTemplateFile("DemoServiceImpl", entityName + "ServiceImpl", filePath, map);
     }
@@ -354,6 +393,7 @@ public class GeneratorConfig {
                                             String serPackageName, String controllerPackageName) {
 
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("dtoPackageName", dtoPackageName);
         map.put("entityPackageName", entityPackageName);
         map.put("serPackageName", serPackageName);
         map.put("controllerPackageName", controllerPackageName);

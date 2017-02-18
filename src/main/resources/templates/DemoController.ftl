@@ -1,6 +1,7 @@
 package ${controllerPackageName};
 
 import com.alibaba.fastjson.JSONObject;
+import ${dtoPackageName}.${entityName}Dto;
 import ${entityPackageName}.${entityName};
 import ${serPackageName}.${entityName}Service;
 import org.framework.basic.system.BaseResponse;
@@ -27,15 +28,15 @@ public class ${entityName}Controller {
     /**
      * 添加
      *
-     * @param ${low_entityName}
+     * @param ${low_entityName}Dto
      * @return
      */
     @RequestMapping(value = "/create${entityName}", method = RequestMethod.POST)
-    public ResponseEntity create${entityName}(${entityName} ${low_entityName}) {
-        logger.debug("${low_entityName}Controller create request info:{}", JSONObject.toJSONString(${low_entityName}));
+    public ResponseEntity create${entityName}(${entityName}Dto ${low_entityName}Dto) {
+        logger.debug("${low_entityName}Controller create request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
         try {
-            ${low_entityName}Service.insert(${low_entityName});
-            return BaseResponse.buildSuccess("添加成功");
+            ResponseEntity resp = ${low_entityName}Service.create${entityName}(${low_entityName}Dto);
+            return resp;
         } catch (BaseException e) {
             logger.debug(e.getMessage());
             return BaseResponse.buildError(e.getMessage(), "添加失败");
@@ -47,15 +48,15 @@ public class ${entityName}Controller {
     /**
      * 修改
      *
-     * @param ${low_entityName}
+     * @param ${low_entityName}Dto
      * @return
      */
     @RequestMapping(value = "/update${entityName}", method = RequestMethod.POST)
-    public ResponseEntity update${entityName}(${entityName} ${low_entityName}) {
-        logger.debug("${low_entityName}Controller update request info:{}", JSONObject.toJSONString(${low_entityName}));
+    public ResponseEntity update${entityName}(${entityName}Dto ${low_entityName}Dto) {
+        logger.debug("${low_entityName}Controller update request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
         try {
-            ${low_entityName}Service.update(${low_entityName});
-            return BaseResponse.buildSuccess("修改成功");
+            ResponseEntity resp = ${low_entityName}Service.update${entityName}(${low_entityName}Dto);
+            return resp;
         } catch (BaseException e) {
             logger.debug(e.getMessage());
             return BaseResponse.buildError(e.getMessage(), "修改失败");
