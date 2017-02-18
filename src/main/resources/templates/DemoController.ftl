@@ -1,0 +1,107 @@
+package ${controllerPackageName};
+
+import com.alibaba.fastjson.JSONObject;
+import ${entityPackageName}.${entityName};
+import ${serPackageName}.${entityName}Service;
+import org.framework.basic.system.BaseResponse;
+import org.framework.basic.system.ResponseEntity;
+import org.framework.exception.BaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/${low_entityName}")
+public class ${entityName}Controller {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Resource
+    private ${entityName}Service ${low_entityName}Service;
+
+    /**
+     * 添加
+     *
+     * @param ${low_entityName}
+     * @return
+     */
+    @RequestMapping(value = "/create${entityName}", method = RequestMethod.POST)
+    public ResponseEntity create${entityName}(${entityName} ${low_entityName}) {
+        logger.debug("${low_entityName}Controller create request info:{}", JSONObject.toJSONString(${low_entityName}));
+        try {
+            ${low_entityName}Service.insert(${low_entityName});
+            return BaseResponse.buildSuccess("添加成功");
+        } catch (BaseException e) {
+            logger.debug(e.getMessage());
+            return BaseResponse.buildError(e.getMessage(), "添加失败");
+        }
+
+    }
+
+
+    /**
+     * 修改
+     *
+     * @param ${low_entityName}
+     * @return
+     */
+    @RequestMapping(value = "/update${entityName}", method = RequestMethod.POST)
+    public ResponseEntity update${entityName}(${entityName} ${low_entityName}) {
+        logger.debug("${low_entityName}Controller update request info:{}", JSONObject.toJSONString(${low_entityName}));
+        try {
+            ${low_entityName}Service.update(${low_entityName});
+            return BaseResponse.buildSuccess("修改成功");
+        } catch (BaseException e) {
+            logger.debug(e.getMessage());
+            return BaseResponse.buildError(e.getMessage(), "修改失败");
+        }
+
+    }
+
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/delete${entityName}ById", method = RequestMethod.POST)
+    public ResponseEntity delete${entityName}ById(String id) {
+        logger.debug("userController deleteById request info:{}", id);
+        try {
+            ${low_entityName}Service.deleteById(id);
+            return BaseResponse.buildSuccess("删除成功");
+        } catch (BaseException e) {
+            logger.debug(e.getMessage());
+            return BaseResponse.buildError(e.getMessage(), "删除失败");
+        }
+
+    }
+
+
+    /**
+     * 查询
+     *
+     * @param ${low_entityName}
+     * @return
+     */
+    @RequestMapping(value = "/query${entityName}ByParams", method = RequestMethod.POST)
+    public ResponseEntity query${entityName}ByParams(${entityName} ${low_entityName}) {
+        logger.debug("${low_entityName}Controller query${entityName}ByParams request info:{}", JSONObject.toJSONString(${low_entityName}));
+        try {
+            List<${entityName}> ${low_entityName}List = ${low_entityName}Service.getByObj(${low_entityName});
+            return BaseResponse.buildSuccess(userList, "查询成功");
+        } catch (BaseException e) {
+            logger.debug(e.getMessage());
+            return BaseResponse.buildError(e.getMessage(), "查询失败");
+        }
+
+    }
+
+
+}
