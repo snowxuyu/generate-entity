@@ -285,7 +285,7 @@ public class GeneratorConfig {
                 continue;
             }
             if ("Date".equals(sqlType2JavaType(domain.getColumType())) && dataFlag) {
-                importSb.append("import import java.util.Date;\n");
+                importSb.append("import java.util.Date;\n");
                 dataFlag = false;
             } else if ("BigDecimal".equals(sqlType2JavaType(domain.getColumType())) && bigdFlag) {
                 importSb.append("import java.math.BigDecimal;\n");
