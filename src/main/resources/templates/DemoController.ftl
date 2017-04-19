@@ -96,7 +96,7 @@ public class ${entityName}Controller {
         logger.debug("${low_entityName}Controller query${entityName}ByParams request info:{}", JSONObject.toJSONString(${low_entityName}));
         try {
             List<${entityName}> ${low_entityName}List = ${low_entityName}Service.getByObj(${low_entityName});
-            return BaseResponse.buildSuccess(userList, "查询成功");
+            return BaseResponse.buildSuccess(${low_entityName}List, "查询成功");
         } catch (BaseException e) {
             logger.debug(e.getMessage());
             return BaseResponse.buildError(e.getMessage(), "查询失败");
