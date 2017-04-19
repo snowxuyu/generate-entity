@@ -72,7 +72,7 @@ public class ${entityName}Controller {
      * @return
      */
     @RequestMapping(value = "/delete${entityName}ById", method = RequestMethod.POST)
-    public ResponseEntity delete${entityName}ById(String id) {
+    public ResponseEntity delete${entityName}ById(Long id) {
         logger.debug("userController deleteById request info:{}", id);
         try {
             ${low_entityName}Service.deleteById(id);

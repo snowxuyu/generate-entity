@@ -48,7 +48,7 @@ ${setPropertiesField}
     public ResponseEntity update${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException {
         logger.debug("${low_entityName}Service update request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
 
-        if (StringUtils.isEmpty(${low_entityName}Dto.getId())) {
+        if (null == ${low_entityName}Dto.getId()) {
             return BaseResponse.buildError("id不能为空");
         }
 
