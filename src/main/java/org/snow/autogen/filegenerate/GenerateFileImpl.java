@@ -99,7 +99,7 @@ public class GenerateFileImpl implements GenerateFile {
             //打印数据库连接信息
             printDataBaseInfo(connection);
             //解析表结构
-            tableStructtResovler(connection, rootDir, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
+            tableStructtResovler(connection, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
             System.out.println("文件生成完毕...");
             System.out.println("<<<-------文件所在路径为------->>>: " + genPath);
             System.out.println("success!!");
@@ -171,7 +171,7 @@ public class GenerateFileImpl implements GenerateFile {
      * @param conn
      * @return
      */
-    private void tableStructtResovler(Connection conn, String rootDir, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
+    private void tableStructtResovler(Connection conn, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
         List<BaseDomain> domainList = new ArrayList<BaseDomain>();
         BaseDomain domain;
 
@@ -192,7 +192,7 @@ public class GenerateFileImpl implements GenerateFile {
                     domainList.add(domain);
                 }
                 //生成一个实体对象的相关文件
-                autoGeneratorCode(domainList, tableName, rootDir, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
+                autoGeneratorCode(domainList, tableName, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
                 domainList.clear();
             }
         } catch (SQLException e) {
@@ -206,7 +206,7 @@ public class GenerateFileImpl implements GenerateFile {
      * @param domainList
      * @param tableName
      */
-    private void autoGeneratorCode(List<BaseDomain> domainList, String tableName, String rootDir, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
+    private void autoGeneratorCode(List<BaseDomain> domainList, String tableName, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
 
         //创建文件夹
         File directory = new File(genPath);
