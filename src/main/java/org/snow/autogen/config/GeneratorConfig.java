@@ -254,7 +254,7 @@ public class GeneratorConfig {
         autoGenerateJavaImpl(entityName, directory, lowEntityName, entityPackageName, dtoPackageName, daoPackageName, serPackageName, implPackageName, domainList);
 
         //生成controller
-        autoGenerateJavaController(entityName, directory, lowEntityName, entityPackageName, serPackageName, controllerPackageName);
+        autoGenerateJavaController(entityName, directory, lowEntityName, entityPackageName, serPackageName, controllerPackageName, dtoPackageName);
 
         //生成Mapper文件 xml
         autoGenerateMapperXml(entityName, directory, entityPackageName, daoPackageName);
@@ -390,7 +390,7 @@ public class GeneratorConfig {
      * @param directory  文件跟路径
      */
     private void autoGenerateJavaController(String entityName, File directory, String lowEntityName, String entityPackageName,
-                                            String serPackageName, String controllerPackageName) {
+                                            String serPackageName, String controllerPackageName, String dtoPackageName) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("dtoPackageName", dtoPackageName);
