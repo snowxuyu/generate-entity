@@ -1,69 +1,111 @@
-package org.snow.autogen.config;
+package org.snow.autogen.filegenerate;
 
 import org.snow.autogen.domain.BaseDomain;
+import org.snow.autogen.dto.RequestDto;
+import org.snow.autogen.system.Constants;
 import org.snow.autogen.util.FileTemplateUtil;
 import org.snow.autogen.util.LineToHumpUtil;
-import org.snow.autogen.util.PropertyUtil;
+import org.snow.autogen.util.ParamsValidatorUtil;
+import org.snow.autogen.util.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * Hello world!
+ * Created with IntelliJ IDEA.
+ * User: snowxuyu
+ * Date: 2017-04-28
+ * Time: 21:38
  */
-public class GeneratorConfig {
+@Service("generateFile")
+public class GenerateFileImpl implements GenerateFile {
 
-    private String url;  //数据库链接
-    private String driver; //数据库驱动
-    private String username;
-    private String password;
-    private String rootDir; //根目录
-    private String packageName; //基础包名称
-    private String entityPackageName;
-    private String daoPackageName;
-    private String serPackageName;
-    private String implPackageName;
-    private String controllerPackageName;
-    private String dtoPackageName;
-    private static String genPath = "";  //文件目录
-    private final String DEFAULT_PATH = "autogenerator"; //子文件夹名称
-
-    //私有构造方法
-    private GeneratorConfig() {
-
-    }
-
-    //单例模式
-    private static class AutoGenerateHolder {
-        public static final GeneratorConfig instance = new GeneratorConfig();
-    }
-
-
-    public static void getInstanceInit() {
+    @Override
+    public String autoGenerator(RequestDto requestDto) throws RuntimeException, IllegalAccessException {
+        ParamsValidatorUtil.validateParam(requestDto,
+                new String[]{"jdbcDriver", "entityPackageName",
+                        "dtoPackageName", "daoPackageName", "servicePackageName",
+                        "serviceImplPackageName", "controllerPackageName"});
         Connection connection = null;
+        String genPath = "";  //文件目录
+        String jdbcUrl = requestDto.getJdbcUrl();
+        String jdbcDriver = requestDto.getJdbcDriver();
+        String jdbcUsername = requestDto.getJdbcUsername();
+        String jdbcPassword = requestDto.getJdbcPassword();
+        String rootDir = requestDto.getRootDir();
+        String packageName = requestDto.getPackageName();
+        String entityPackageName = requestDto.getEntityPackageName();
+        String dtoPackageName = requestDto.getDtoPackageName();
+        String daoPackageName = requestDto.getDaoPackageName();
+        String servicePackageName = requestDto.getServicePackageName();
+        String serviceImplPackageName = requestDto.getServiceImplPackageName();
+        String controllerPackageName = requestDto.getControllerPackageName();
+
+        //初始化路径名称
+        //判断url是否包含 ?createDatabaseIfNotExist=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+        if ((StringUtils.isEmpty(jdbcUrl) || Constants.Common.JDBC_DRIVER.equals(jdbcUrl)) && !jdbcUrl.contains(Constants.Common.URL_EXT)) {
+            jdbcUrl += Constants.Common.URL_EXT;
+        }
+        if (StringUtils.isEmpty(jdbcDriver)) {
+            jdbcDriver = Constants.Common.JDBC_DRIVER;
+        }
+
+
+        if (StringUtils.isEmpty(entityPackageName)) {
+            entityPackageName = packageName.concat(".entity");
+        }
+
+        if (StringUtils.isEmpty(dtoPackageName)) {
+            dtoPackageName = packageName.concat(".dto");
+        }
+
+        if (StringUtils.isEmpty(daoPackageName)) {
+            daoPackageName = packageName.concat(".dao");
+        }
+
+        if (StringUtils.isEmpty(servicePackageName)) {
+            servicePackageName = packageName.concat(".service");
+        }
+
+        if (StringUtils.isEmpty(serviceImplPackageName)) {
+            serviceImplPackageName = packageName.concat(".service.impl");
+        }
+
+        if (StringUtils.isEmpty(controllerPackageName)) {
+            controllerPackageName = packageName.concat(".controller");
+        }
+
+        genPath = rootDir.toUpperCase() + ":" + File.separator + Constants.Common.DEFAULT_PATH;
+        //删除生成目录
+        File file = new File(genPath);
+        file.mkdirs();
+        if (file.exists()) {
+            deleteDir(file);
+        }
+
         try {
-            //初始化配置信息
-            AutoGenerateHolder.instance.initConfigParam();
-
-            //获取数据库连接
-            connection = AutoGenerateHolder.instance.connDataBase();
-
-            //打印数据库链接信息
-            AutoGenerateHolder.instance.printInitInfo(connection);
-
+            //连接数据库
+            connection = connDataBase(jdbcUrl, jdbcUsername, jdbcPassword, jdbcDriver);
+            //打印数据库连接信息
+            printDataBaseInfo(connection);
             //解析表结构
-            AutoGenerateHolder.instance.tableStructtResovler(connection);
-
+            tableStructtResovler(connection, rootDir, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
             System.out.println("文件生成完毕...");
             System.out.println("<<<-------文件所在路径为------->>>: " + genPath);
             System.out.println("success!!");
         } catch (Exception e) {
             System.out.println("文件生成失败..." + e);
-            System.out.println("error!!");
+            throw new RuntimeException("文件生成失败..." + e);
         } finally {
             if (connection != null) {
                 try {
@@ -73,42 +115,17 @@ public class GeneratorConfig {
                 }
             }
         }
+
+        return genPath;
     }
 
-    /**
-     * 初始化项目配置 数据库信息
-     *
-     * @return
-     */
-    private void initConfigParam() {
-        //加载数据库配置
-        url = PropertyUtil.getValue("jdbc.url");
-        driver = PropertyUtil.getValue("jdbc.driver");
-        username = PropertyUtil.getValue("jdbc.username");
-        password = PropertyUtil.getValue("jdbc.password");
-        rootDir = PropertyUtil.getValue("root.dir");
-        packageName = PropertyUtil.getValue("packageName");
-        entityPackageName = PropertyUtil.getValue("entityPackageName");
-        serPackageName = PropertyUtil.getValue("servicePackageName");
-        implPackageName = PropertyUtil.getValue("implPackageName");
-        daoPackageName = PropertyUtil.getValue("daoPackageName");
-        controllerPackageName = PropertyUtil.getValue("controllerPackageName");
-        dtoPackageName = PropertyUtil.getValue("dtoPackageName");
-
-        //删除生成目录
-        File file = new File(rootDir.toUpperCase() + ":" + File.separator + DEFAULT_PATH);
-        file.mkdirs();
-        if (file.exists()) {
-            deleteDir(file);
-        }
-    }
 
     /**
      * 连接数据库
      *
      * @return
      */
-    private Connection connDataBase() {
+    private Connection connDataBase(String url, String username, String password, String driver) {
 
         Connection conn;
         //获取数据库连接
@@ -118,13 +135,12 @@ public class GeneratorConfig {
             //获取数据库连接
             conn = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("没有发现数据库驱动... " + e.getMessage());
+            throw new RuntimeException("没有发现数据库驱动... " + e);
         } catch (SQLException e) {
-            throw new RuntimeException("数据库连接失败..." + e.getMessage());
+            throw new RuntimeException("数据库连接失败..." + e);
         }
         return conn;
     }
-
 
     /**
      * 打印数据库链接信息
@@ -132,7 +148,7 @@ public class GeneratorConfig {
      * @param conn
      */
 
-    private void printInitInfo(Connection conn) {
+    private void printDataBaseInfo(Connection conn) {
         try {
             //获取解析数据库对象 DatabaseMetaData
             DatabaseMetaData dbmd = conn.getMetaData();
@@ -144,11 +160,10 @@ public class GeneratorConfig {
                     + "\n数据库名称: " + conn.getCatalog());
             System.out.println("==================================================");
         } catch (SQLException e) {
-            System.out.println(e);
+            throw new RuntimeException(e);
         }
 
     }
-
 
     /**
      * 解析库中表结构(字段名称、字段类型、注释)
@@ -156,7 +171,7 @@ public class GeneratorConfig {
      * @param conn
      * @return
      */
-    private void tableStructtResovler(Connection conn) {
+    private void tableStructtResovler(Connection conn, String rootDir, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
         List<BaseDomain> domainList = new ArrayList<BaseDomain>();
         BaseDomain domain;
 
@@ -177,11 +192,11 @@ public class GeneratorConfig {
                     domainList.add(domain);
                 }
                 //生成一个实体对象的相关文件
-                autoGeneratorCode(domainList, tableName);
+                autoGeneratorCode(domainList, tableName, rootDir, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, controllerPackageName, genPath);
                 domainList.clear();
             }
         } catch (SQLException e) {
-            System.out.println("解析表结构出错" + e);
+            throw new RuntimeException("解析表结构出错" + e);
         }
     }
 
@@ -191,41 +206,9 @@ public class GeneratorConfig {
      * @param domainList
      * @param tableName
      */
-    private void autoGeneratorCode(List<BaseDomain> domainList, String tableName) {
-        if (rootDir == null || rootDir.length() <= 0) {
-            throw new RuntimeException("root.dir 未指定..");
-        }
-
-        if (packageName == null || packageName.length() <= 0) {
-            throw new RuntimeException("packageName 未指定..");
-        }
-
-        if (entityPackageName == null || entityPackageName.length() <= 0) {
-            entityPackageName = packageName.concat(".entity");
-        }
-
-        if (daoPackageName == null || daoPackageName.length() <= 0) {
-            daoPackageName = packageName.concat(".dao");
-        }
-
-        if (serPackageName == null || serPackageName.length() <= 0) {
-            serPackageName = packageName.concat(".service");
-        }
-
-        if (implPackageName == null || implPackageName.length() <= 0) {
-            implPackageName = packageName.concat(".service.impl");
-        }
-
-        if (controllerPackageName == null || controllerPackageName.length() <= 0) {
-            controllerPackageName = packageName.concat(".controller");
-        }
-
-        if (dtoPackageName == null || dtoPackageName.length() <= 0) {
-            dtoPackageName = packageName.concat(".dto");
-        }
+    private void autoGeneratorCode(List<BaseDomain> domainList, String tableName, String rootDir, String entityPackageName, String dtoPackageName, String daoPackageName, String servicePackageName, String serviceImplPackageName, String controllerPackageName, String genPath) {
 
         //创建文件夹
-        genPath = rootDir.toUpperCase() + ":" + File.separator + DEFAULT_PATH;
         File directory = new File(genPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -242,19 +225,19 @@ public class GeneratorConfig {
         autoGenerateJavaEntity(entityName, domainList, tableName, directory, entityPackageName);
 
         //生成java Dto
-        autoGenerateJavaDto(entityName,  directory, entityPackageName, dtoPackageName);
+        autoGenerateJavaDto(entityName, directory, entityPackageName, dtoPackageName);
 
         //生成dao文件
         autoGenerateJavaDao(entityName, directory, entityPackageName, daoPackageName);
 
         //生成Service文件
-        autoGenerateJavaSer(entityName, directory, entityPackageName, dtoPackageName, lowEntityName, serPackageName);
+        autoGenerateJavaSer(entityName, directory, entityPackageName, dtoPackageName, lowEntityName, servicePackageName);
 
         //生成impl
-        autoGenerateJavaImpl(entityName, directory, lowEntityName, entityPackageName, dtoPackageName, daoPackageName, serPackageName, implPackageName, domainList);
+        autoGenerateJavaImpl(entityName, directory, lowEntityName, entityPackageName, dtoPackageName, daoPackageName, servicePackageName, serviceImplPackageName, domainList);
 
         //生成controller
-        autoGenerateJavaController(entityName, directory, lowEntityName, entityPackageName, serPackageName, controllerPackageName);
+        autoGenerateJavaController(entityName, directory, lowEntityName, entityPackageName, servicePackageName, controllerPackageName, dtoPackageName);
 
         //生成Mapper文件 xml
         autoGenerateMapperXml(entityName, directory, entityPackageName, daoPackageName);
@@ -303,6 +286,7 @@ public class GeneratorConfig {
 
     /**
      * 生成DTO文件
+     *
      * @param entityName
      * @param directory
      * @param entityPackageName
@@ -376,7 +360,7 @@ public class GeneratorConfig {
                 continue;
             }
 
-            sb.append("\t\t" +lowEntityName + ".set" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "(" + lowEntityName + "Dto.get" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "());\n");
+            sb.append("\t\t" + lowEntityName + ".set" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "(" + lowEntityName + "Dto.get" + LineToHumpUtil.toUpperCaseFirstOne(LineToHumpUtil.lineToHump(domain.getColumName())) + "());\n");
         }
         map.put("setPropertiesField", sb.toString());
         String filePath = directory + File.separator + implPackageName.replace(".", File.separator) + File.separator;
@@ -390,7 +374,7 @@ public class GeneratorConfig {
      * @param directory  文件跟路径
      */
     private void autoGenerateJavaController(String entityName, File directory, String lowEntityName, String entityPackageName,
-                                            String serPackageName, String controllerPackageName) {
+                                            String serPackageName, String controllerPackageName, String dtoPackageName) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("dtoPackageName", dtoPackageName);
@@ -467,7 +451,6 @@ public class GeneratorConfig {
         }
         return "String";
     }
-
 
     /**
      * 递归删除目录下的所有文件及子目录下所有文件

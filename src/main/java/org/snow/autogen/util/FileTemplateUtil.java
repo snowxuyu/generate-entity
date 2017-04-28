@@ -3,6 +3,7 @@ package org.snow.autogen.util;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.snow.autogen.system.Constants;
 
 import java.io.*;
 import java.util.Map;
@@ -16,10 +17,9 @@ import java.util.Map;
 public abstract class FileTemplateUtil {
 
     /**
-     *
      * @param teplateName 模板文件名称
      * @param fileOutPath 输出路径
-     * @param map 替换数据
+     * @param map         替换数据
      */
     public final static void replaceTemplateFile(String teplateName, String entityName, String fileOutPath, Map<String, Object> map) {
         Configuration configuration = new Configuration();
@@ -33,7 +33,7 @@ public abstract class FileTemplateUtil {
             File fileName = new File(teplateName.contains("Mapper") ? fileNamePath + ".xml" : fileNamePath + ".java");
             fileName.createNewFile();
 
-            configuration.setDirectoryForTemplateLoading(new File(FileTemplateUtil.class.getResource("/").getPath() +"templates/"));
+            configuration.setDirectoryForTemplateLoading(new File(FileTemplateUtil.class.getResource("/").getPath() + Constants.Common.TEMPLATE_PATH));
             //获取模板（template）
             Template template = configuration.getTemplate(teplateName + ".ftl");
             out = new OutputStreamWriter(new FileOutputStream(teplateName.contains("Mapper") ? fileNamePath + ".xml" : fileNamePath + ".java"), "UTF-8");

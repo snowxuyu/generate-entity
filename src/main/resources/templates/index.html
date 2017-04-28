@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title111</title>
+    <script type="text/javascript" src="js/jquery-3.2.1.js"/>
+</head>
+<body>
+    <form id="form">
+        jdbc.url(必填): <input type="text" id="jdbc_url" name="jdbcUrl" />(例: jdbc:mysql://192.168.1.157:3306/merchants_mobp2p) <br/>
+        jdbc.dirver(选填): <input type="text" id="jdbc_driver" name="jdbcDriver" /> (默认:com.mysql.jdbc.Driver) <br/>
+        jdbc.username(必填): <input type="text" id="jdbc_username" name="jdbcUsername" /> <br/>
+        jdbc.password(必填): <input type="text" id="jdbc_password" name="jdbcPassword" /> <br/>
+        文件生产所在盘符(必填): <input type="text" id="root_dir" name="rootDir" /> <br/>
+        包名称(必填): <input type="text" id="package_name" name="packageName"/> <br/>
+        entity包名称(选填): <input type="text" id="entity_package_name" name="entityPackageName"/> <br/>
+        DTO包名称(选填): <input type="text" id="dto_package_name" name="dtoPackageName"/> <br/>
+        DAO包名称(选填): <input type="text" id="dao_package_name" name="daoPackageName"/> <br/>
+        service接口包名称(选填): <input type="text" id="service_package_name" name="servicePackageName"/> <br/>
+        service实现包名称(选填): <input type="text" id="service_impl_package_name" name="serviceImplPackageName"/> <br/>
+        controller包名称(选填): <input type="text" id="controller_package_name" name="controllerPackageName"/> <br/>
+        <input id="btn" type="button" value="提交"/> <br/>
+    </form>
+
+    <script type="text/javascript">
+        $("#btn").on("click", function () {
+            var formData = $("#form").serialize();
+            $.ajax({
+                url:'http://127.0.0.1:8080/generate/instance',
+                type:'POST', //GET
+                data: formData,
+                dataType:'json',
+                success : function (data) {
+                    alert(data["message"]);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
