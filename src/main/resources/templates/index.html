@@ -124,11 +124,11 @@
     <ul>
         <li class="clear">
             <label>jdbc.url(必填):</label>
-            <input type="text" id="jdbc_url" name="jdbcUrl" size="80"/>(例: jdbc:mysql://localhost:3306/personal)
+            <input type="text" id="jdbc_url" name="jdbcUrl"/>(例: jdbc:mysql://localhost:3306/personal)
         </li>
         <li class="clear">
             <label>jdbc.dirver(选填):</label>
-            <input type="text" id="jdbc_driver" name="jdbcDriver" size="80"/>(默认:com.mysql.jdbc.Driver)
+            <input type="text" id="jdbc_driver" name="jdbcDriver"/>(默认:com.mysql.jdbc.Driver)
         </li>
         <li class="clear">
             <label>jdbc.username(必填):</label>
@@ -144,31 +144,31 @@
         </li>
         <li class="clear">
             <label>包名称(必填):</label>
-            <input type="text" id="package_name" name="packageName" size="80"/>
+            <input type="text" id="package_name" name="packageName"/>
         </li>
         <li class="clear">
             <label>entity包名称(选填):</label>
-            <input type="text" id="entity_package_name" name="entityPackageName" size="80"/>
+            <input type="text" id="entity_package_name" name="entityPackageName"/>
         </li>
         <li class="clear">
             <label>DTO包名称(选填):</label>
-            <input type="text" id="dto_package_name" name="dtoPackageName" size="80"/>
+            <input type="text" id="dto_package_name" name="dtoPackageName"/>
         </li>
         <li class="clear">
             <label>DAO包名称(选填): </label>
-            <input type="text" id="dao_package_name" name="daoPackageName" size="80"/>
+            <input type="text" id="dao_package_name" name="daoPackageName"/>
         </li>
         <li class="clear">
             <label>service接口包名称(选填):</label>
-            <input type="text" id="service_package_name" name="servicePackageName" size="80"/>
+            <input type="text" id="service_package_name" name="servicePackageName"/>
         </li>
         <li class="clear">
             <label>service实现包名称(选填):</label>
-            <input type="text" id="service_impl_package_name" name="serviceImplPackageName" size="80"/>
+            <input type="text" id="service_impl_package_name" name="serviceImplPackageName"/>
         </li>
         <li class="clear">
             <label>controller包名称(选填):</label>
-            <input type="text" id="controller_package_name" name="controllerPackageName" size="80"/>
+            <input type="text" id="controller_package_name" name="controllerPackageName"/>
         </li>
         <li class="clear">
             <input id="btn" type="button" value="提交"/>
@@ -182,7 +182,7 @@
             url: 'http://127.0.0.1:8080/generate/instance',
             type: 'POST', //POST
             data: formData,
-            dataType: 'json',
+            dataType: 'json', //返回json数据
             success: function (data) {
                 alert(data["message"]);
             }
