@@ -4,25 +4,107 @@
     <meta charset="UTF-8"/>
     <title>代码自动生成</title>
     <script type="text/javascript" src="js/jquery-3.2.1.js"/>
+    <style>
+        html,body,div,header,section,ul,li,p,h1,h2,h3,h4,h5,h6,input,button,select,textarea,label,dl,dt,dd,i{margin: 0;padding: 0;border: none;list-style: none;font-style: normal;}
+        html{-webkit-tap-highlight-color: rgba(0,0,0,0);}
+        html,body{height: 100%;vertical-align: middle;margin: 0 auto;background-color: #fff!important;
+            font-size: 18px;}
+        img{padding: 0}
+        body,input,button,select,textarea{font-family: 'Microsoft yahei', arial, tahoma;
+        }
+        li{list-style: none;}
+        a{text-decoration: none;}
+        input,button,select,textarea{background: transparent;color: #d9d9d9;border-radius: 0;outline: none;}
+        input::-webkit-input-placeholder{color: #1d1d17!important;}
+        input::-moz-input-placeholder{color: #1d1d17!important;}
+        input::-ms-input-placeholder{color: #1d1d17!important;}
+        input[type=number] {
+            -moz-appearance:textfield;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #form{width: 1270px;border:1px solid #ddd;margin: 50px auto 0 auto;}
+        #form ul{margin: 20px;}
+        #form li{margin-top: 20px;text-align: center;width: 100%;height: 40px;}
+        #form li:last-child{height: 50px;}
+        #form label{float:left;display: inline-block;width: 210px;text-align: right;margin-right: 10px;color:#333;padding-left: 30px;}
+        #form input{float:left;width: 600px;height:40px;padding-left: 7px;border:1px solid #ddd;color: #999;}
+        #form button{width: 300px;height: 50px;background-color: #11b7fc;color:#fff;}
+    </style>
 </head>
 <body>
     <h5>是的，你没看错不是CSS没有加载，我就压根不会写CSS。不要在意这些细节!</h5>
     <form id="form">
-        jdbc.url(必填): <input type="text" id="jdbc_url" name="jdbcUrl" size="80"/>(例: jdbc:mysql://localhost:3306/personal) <br/>
-        jdbc.dirver(选填): <input type="text" id="jdbc_driver" name="jdbcDriver" size="80"/> (默认:com.mysql.jdbc.Driver) <br/>
-        jdbc.username(必填): <input type="text" id="jdbc_username" name="jdbcUsername" /> <br/>
-        jdbc.password(必填): <input type="password" id="jdbc_password" name="jdbcPassword" /> <br/>
-        文件生产所在盘符(必填): <input type="text" id="root_dir" name="rootDir" />(例: C) <br/>
-        包名称(必填): <input type="text" id="package_name" name="packageName" size="80"/> <br/>
-        entity包名称(选填): <input type="text" id="entity_package_name" name="entityPackageName" size="80"/> <br/>
-        DTO包名称(选填): <input type="text" id="dto_package_name" name="dtoPackageName" size="80"/> <br/>
+        <ul>
+            <li class="clear">
+                <label>jdbc.url(必填):</label>
+                <input type="text" id="jdbc_url" name="jdbcUrl" size="80"/>(例: jdbc:mysql://localhost:3306/personal)
+            </li>
+            <li class="clear">
+                <label>jdbc.dirver(选填):</label>
+                <input type="text" id="jdbc_driver" name="jdbcDriver" size="80"/>(默认:com.mysql.jdbc.Driver)
+            </li>
+            <li class="clear">
+                <label>jdbc.username(必填):</label>
+                <input type="text" id="jdbc_username" name="jdbcUsername" />
+            </li>
+            <li class="clear">
+                <label>jdbc.password(必填):</label>
+                <input type="password" id="jdbc_password" name="jdbcPassword" />
+            </li>
+            <li class="clear">
+                <label>文件生产所在盘符(必填):</label>
+                <input type="text" id="root_dir" name="rootDir" />(例: C)
+            </li>
+            <li class="clear">
+                <label>包名称(必填):</label>
+                <input type="text" id="package_name" name="packageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>entity包名称(选填):</label>
+                <input type="text" id="entity_package_name" name="entityPackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>DTO包名称(选填):</label>
+                <input type="text" id="dto_package_name" name="dtoPackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>DAO包名称(选填): </label>
+                <input type="text" id="dao_package_name" name="daoPackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>service接口包名称(选填):</label>
+                <input type="text" id="service_package_name" name="servicePackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>service实现包名称(选填):</label>
+                <input type="text" id="service_impl_package_name" name="serviceImplPackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <label>controller包名称(选填):</label>
+                <input type="text" id="controller_package_name" name="controllerPackageName" size="80"/>
+            </li>
+            <li class="clear">
+                <button id="btn">提交</button>
+            </li>
+        </ul>
+        <!--jdbc.url(必填):  <br/>
+        jdbc.dirver(选填):   <br/>
+        jdbc.username(必填):  <br/>
+        jdbc.password(必填):  <br/>
+        文件生产所在盘符(必填):  <br/>
+        包名称(必填):  <br/>
+        entity包名称(选填):  <br/>
+        DTO包名称(选填):  <br/>
         DAO包名称(选填): <input type="text" id="dao_package_name" name="daoPackageName" size="80"/> <br/>
         service接口包名称(选填): <input type="text" id="service_package_name" name="servicePackageName" size="80"/> <br/>
         service实现包名称(选填): <input type="text" id="service_impl_package_name" name="serviceImplPackageName" size="80"/> <br/>
-        controller包名称(选填): <input type="text" id="controller_package_name" name="controllerPackageName" size="80"/> <br/>
-        <input id="btn" type="button" value="提交"/> <br/>
+        controller包名称(选填): <input type="text" id="controller_package_name" name="controllerPackageName" size="80"/> <br/>-->
+       <!-- <input id="btn" type="button" value="提交"/> <br/>-->
     </form>
-
     <script type="text/javascript">
         $("#btn").on("click", function () {
             var formData = $("#form").serialize();
