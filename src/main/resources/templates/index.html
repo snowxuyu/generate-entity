@@ -178,7 +178,6 @@
 <script type="text/javascript">
     $("#btn").on("click", function () {
         var formData = $("#form").serialize();
-        alert(formData);
         $.ajax({
             url: 'http://127.0.0.1:8080/generate/instance',
             type: 'POST', //POST
