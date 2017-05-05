@@ -38,7 +38,7 @@ public class ${entityName}Controller {
             ${low_entityName}Service.create${entityName}(${low_entityName}Dto);
             return BaseResponse.buildSuccess("添加成功");
         } catch (BaseException e) {
-            logger.error("添加失败: " + e);
+            logger.error("添加失败: ", e);
             return BaseResponse.buildError("[添加失败] " + e.getMessage());
         }
 
@@ -58,7 +58,7 @@ public class ${entityName}Controller {
             ${low_entityName}Service.update${entityName}(${low_entityName}Dto);
             return BaseResponse.buildSuccess("修改成功");
         } catch (BaseException e) {
-            logger.error("修改失败: " + e);
+            logger.error("修改失败: ", e);
             return BaseResponse.buildError("[修改失败] " + e.getMessage());
         }
 
@@ -78,7 +78,7 @@ public class ${entityName}Controller {
             ${low_entityName}Service.deleteById(id);
             return BaseResponse.buildSuccess("删除成功");
         } catch (BaseException e) {
-            logger.error("删除失败: " + e);
+            logger.error("删除失败: ", e);
             return BaseResponse.buildError("[删除失败] " + e.getMessage());
         }
 
@@ -98,7 +98,7 @@ public class ${entityName}Controller {
             List<${entityName}> ${low_entityName}List = ${low_entityName}Service.getByObj(${low_entityName});
             return BaseResponse.buildSuccess(${low_entityName}List, "查询成功");
         } catch (BaseException e) {
-            logger.error("查询失败: " + e);
+            logger.error("查询失败: ", e);
             return BaseResponse.buildError("[查询失败] " + e.getMessage());
         }
 
