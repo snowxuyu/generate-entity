@@ -9,7 +9,7 @@ import org.framework.exception.BaseException;
 
 public interface ${entityName}Service extends BaseService<${entityName}> {
 
-    ResponseEntity create${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException;
+    void create${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException;
 
-    ResponseEntity update${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException;
+    void update${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException;
 }

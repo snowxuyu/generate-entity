@@ -31,12 +31,10 @@ public class ${entityName}ServiceImpl extends BaseServiceImpl<${entityName}> imp
     * @return
     * @throws BaseException
     */
-    public ResponseEntity create${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException {
-        logger.debug("${low_entityName}Service create request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
+    public void create${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException {
         ${entityName} ${low_entityName} = new ${entityName}();
 ${setPropertiesField}
         ${low_entityName}Dao.insert(${low_entityName});
-        return BaseResponse.buildSuccess("添加成功");
     }
 
     /**
@@ -45,17 +43,14 @@ ${setPropertiesField}
     * @return
     * @throws BaseException
     */
-    public ResponseEntity update${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException {
-        logger.debug("${low_entityName}Service update request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
-
+    public void update${entityName}(${entityName}Dto ${low_entityName}Dto) throws BaseException {
         if (null == ${low_entityName}Dto.getId()) {
-            return BaseResponse.buildError("id不能为空");
+            throw new BaseException("id不能为空");
         }
 
         ${entityName} ${low_entityName} = ${low_entityName}Dao.getById(${low_entityName}Dto.getId());
 ${setPropertiesField}
         ${low_entityName}Dao.update(${low_entityName});
-        return BaseResponse.buildSuccess("修改成功");
     }
 
 }

@@ -35,11 +35,11 @@ public class ${entityName}Controller {
     public ResponseEntity create${entityName}(${entityName}Dto ${low_entityName}Dto) {
         logger.debug("${low_entityName}Controller create request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
         try {
-            ResponseEntity resp = ${low_entityName}Service.create${entityName}(${low_entityName}Dto);
-            return resp;
+            ${low_entityName}Service.create${entityName}(${low_entityName}Dto);
+            return BaseResponse.buildSuccess("添加成功");
         } catch (BaseException e) {
-            logger.debug(e.getMessage());
-            return BaseResponse.buildError(e.getMessage(), "添加失败");
+            logger.error("添加失败: " + e);
+            return BaseResponse.buildError("[添加失败] " + e.getMessage());
         }
 
     }
@@ -55,11 +55,11 @@ public class ${entityName}Controller {
     public ResponseEntity update${entityName}(${entityName}Dto ${low_entityName}Dto) {
         logger.debug("${low_entityName}Controller update request info:{}", JSONObject.toJSONString(${low_entityName}Dto));
         try {
-            ResponseEntity resp = ${low_entityName}Service.update${entityName}(${low_entityName}Dto);
-            return resp;
+            ${low_entityName}Service.update${entityName}(${low_entityName}Dto);
+            return BaseResponse.buildSuccess("修改成功");
         } catch (BaseException e) {
-            logger.debug(e.getMessage());
-            return BaseResponse.buildError(e.getMessage(), "修改失败");
+            logger.error("修改失败: " + e);
+            return BaseResponse.buildError("[修改失败] " + e.getMessage());
         }
 
     }
@@ -78,8 +78,8 @@ public class ${entityName}Controller {
             ${low_entityName}Service.deleteById(id);
             return BaseResponse.buildSuccess("删除成功");
         } catch (BaseException e) {
-            logger.debug(e.getMessage());
-            return BaseResponse.buildError(e.getMessage(), "删除失败");
+            logger.error("删除失败: " + e);
+            return BaseResponse.buildError("[删除失败] " + e.getMessage());
         }
 
     }
@@ -98,8 +98,8 @@ public class ${entityName}Controller {
             List<${entityName}> ${low_entityName}List = ${low_entityName}Service.getByObj(${low_entityName});
             return BaseResponse.buildSuccess(${low_entityName}List, "查询成功");
         } catch (BaseException e) {
-            logger.debug(e.getMessage());
-            return BaseResponse.buildError(e.getMessage(), "查询失败");
+            logger.error("查询失败: " + e);
+            return BaseResponse.buildError("[查询失败] " + e.getMessage());
         }
 
     }
