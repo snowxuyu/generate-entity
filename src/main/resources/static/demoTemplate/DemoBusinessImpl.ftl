@@ -6,10 +6,9 @@ import ${daoPackageName}.${entityName}Dao;
 import ${dtoPackageName}.${entityName}Dto;
 import ${entityPackageName}.${entityName};
 import ${serPackageName}.${entityName}Service;
-import org.framework.basic.service.impl.BaseServiceImpl;
-import org.framework.basic.system.BaseResponse;
-import org.framework.basic.system.ResponseEntity;
-import org.framework.exception.BaseException;
+import com.mobanker.framework.bussiness.impls.BaseBusinessImpl;
+import com.mobanker.framework.dto.ResponseEntity;
+import com.mobanker.framework.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import javax.annotation.Resource;
 
 
 @Service
-public class ${entityName}ServiceImpl extends BaseServiceImpl<${entityName}> implements ${entityName}Service {
+public class ${entityName}BusinessImpl extends BaseBusinessImpl<${entityName}> implements ${entityName}Business {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
