@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import ${daoPackageName}.${entityName}Dao;
 import ${dtoPackageName}.${entityName}Dto;
 import ${entityPackageName}.${entityName};
-import ${serPackageName}.${entityName}Service;
-import com.mobanker.framework.bussiness.impls.BaseBusinessImpl;
+import ${serPackageName}.${entityName}Business;
+import com.mobanker.framework.bussiness.impls.BaseBussinessImpl;
 import com.mobanker.framework.dto.ResponseEntity;
 import com.mobanker.framework.exception.BaseException;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 
 
 @Service
-public class ${entityName}BusinessImpl extends BaseBusinessImpl<${entityName}> implements ${entityName}Business {
+public class ${entityName}BusinessImpl extends BaseBussinessImpl<${entityName}> implements ${entityName}Business {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
