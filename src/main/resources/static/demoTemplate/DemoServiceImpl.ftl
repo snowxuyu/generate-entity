@@ -7,7 +7,6 @@ import ${dtoPackageName}.${entityName}Dto;
 import ${entityPackageName}.${entityName};
 import ${serPackageName}.${entityName}Service;
 import org.framework.basic.service.impl.BaseServiceImpl;
-import org.framework.basic.system.BaseResponse;
 import org.framework.basic.system.ResponseEntity;
 import org.framework.exception.BaseException;
 import org.slf4j.Logger;
