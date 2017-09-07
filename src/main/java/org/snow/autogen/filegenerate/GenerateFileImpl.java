@@ -263,8 +263,8 @@ public class GenerateFileImpl implements GenerateFile {
         map.put("entityPackageName", entityPackageName);
         for (BaseDomain domain : domainList) {
             if ("id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
-                    || "create_name".equals(domain.getColumName()) || "update_time".equals(domain.getColumName())
-                    || "update_name".equals(domain.getColumName())) {
+                    || "create_user".equals(domain.getColumName()) || "update_time".equals(domain.getColumName())
+                    || "update_user".equals(domain.getColumName())) {
                 continue;
             }
             if ("Date".equals(sqlType2JavaType(domain.getColumType())) && dataFlag) {
