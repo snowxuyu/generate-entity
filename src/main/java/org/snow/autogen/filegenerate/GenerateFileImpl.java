@@ -38,7 +38,7 @@ public class GenerateFileImpl implements GenerateFile {
                         "serviceImplPackageName", "controllerPackageName"});
         Connection connection = null;
         String genPath = "";  //文件目录
-        String jdbcUrl = requestDto.getJdbcUrl();
+        String jdbcUrl = requestDto.getJdbcUrl().trim();
         String jdbcDriver = requestDto.getJdbcDriver();
         String jdbcUsername = requestDto.getJdbcUsername();
         String jdbcPassword = requestDto.getJdbcPassword();
