@@ -74,11 +74,11 @@ public class GenerateFileImpl implements GenerateFile {
         }
 
         if (StringUtils.isEmpty(servicePackageName)) {
-            servicePackageName = packageName.concat(".business");
+            servicePackageName = packageName.concat(".service");
         }
 
         if (StringUtils.isEmpty(serviceImplPackageName)) {
-            serviceImplPackageName = packageName.concat(".business.impl");
+            serviceImplPackageName = packageName.concat(".service.impl");
         }
 
         if (StringUtils.isEmpty(controllerPackageName)) {
@@ -332,7 +332,7 @@ public class GenerateFileImpl implements GenerateFile {
         map.put("serPackageName", serPackageName);
         map.put("entityName", entityName);
         String filePath = directory + File.separator + serPackageName.replace(".", File.separator) + File.separator;
-        FileTemplateUtil.replaceTemplateFile("DemoBusiness", entityName + "Business", filePath, map);
+        FileTemplateUtil.replaceTemplateFile("DemoService", entityName + "Service", filePath, map);
     }
 
 
@@ -364,7 +364,7 @@ public class GenerateFileImpl implements GenerateFile {
         }
         map.put("setPropertiesField", sb.toString());
         String filePath = directory + File.separator + implPackageName.replace(".", File.separator) + File.separator;
-        FileTemplateUtil.replaceTemplateFile("DemoBusinessImpl", entityName + "BusinessImpl", filePath, map);
+        FileTemplateUtil.replaceTemplateFile("DemoServiceImpl", entityName + "ServiceImpl", filePath, map);
     }
 
     /**
