@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import ${daoPackageName}.${entityName}Dao;
 import ${dtoPackageName}.${entityName}Dto;
 import ${entityPackageName}.${entityName};
-import ${serPackageName}.${entityName}Business;
+import ${serPackageName}.${entityName}Service;
 import com.mobanker.framework.service.impl.BaseServiceImpl;
 import com.mobanker.framework.dto.ResponseEntity;
 import com.mobanker.framework.exception.BaseException;
