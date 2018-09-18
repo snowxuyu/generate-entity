@@ -53,43 +53,49 @@ public class GenerateFileImpl implements GenerateFile {
 
         //初始化路径名称
         //判断url是否包含 ?createDatabaseIfNotExist=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
-        if ((StringUtils.isEmpty(jdbcUrl) || Constants.Common.JDBC_DRIVER.equals(jdbcUrl)) && !jdbcUrl.contains(Constants.Common.URL_EXT)) {
+        if ( (StringUtils.isEmpty(jdbcUrl) || Constants.Common.JDBC_DRIVER.equals(jdbcUrl)) && !jdbcUrl.contains(Constants.Common.URL_EXT) ) {
             jdbcUrl += Constants.Common.URL_EXT;
         }
-        if (StringUtils.isEmpty(jdbcDriver)) {
+        if ( StringUtils.isEmpty(jdbcDriver) ) {
             jdbcDriver = Constants.Common.JDBC_DRIVER;
         }
 
 
-        if (StringUtils.isEmpty(entityPackageName)) {
+        if ( StringUtils.isEmpty(entityPackageName) ) {
             entityPackageName = packageName.concat(".entity");
         }
 
-        if (StringUtils.isEmpty(dtoPackageName)) {
+        if ( StringUtils.isEmpty(dtoPackageName) ) {
             dtoPackageName = packageName.concat(".dto");
         }
 
-        if (StringUtils.isEmpty(daoPackageName)) {
+        if ( StringUtils.isEmpty(daoPackageName) ) {
             daoPackageName = packageName.concat(".dao");
         }
 
-        if (StringUtils.isEmpty(servicePackageName)) {
+        if ( StringUtils.isEmpty(servicePackageName) ) {
             servicePackageName = packageName.concat(".service");
         }
 
-        if (StringUtils.isEmpty(serviceImplPackageName)) {
+        if ( StringUtils.isEmpty(serviceImplPackageName) ) {
             serviceImplPackageName = packageName.concat(".service.impl");
         }
 
-        if (StringUtils.isEmpty(controllerPackageName)) {
+        if ( StringUtils.isEmpty(controllerPackageName) ) {
             controllerPackageName = packageName.concat(".controller");
         }
 
-        genPath = rootDir.toUpperCase() + ":" + File.separator + Constants.Common.DEFAULT_PATH;
+        String osName = System.getProperty("os.name").toLowerCase();
+        if ( osName.contains("windows") ) {
+            genPath = rootDir.toUpperCase() + ":" + File.separator + Constants.Common.DEFAULT_PATH;
+        } else {
+            genPath = rootDir + File.separator + Constants.Common.DEFAULT_PATH;
+        }
+
         //删除生成目录
         File file = new File(genPath);
         file.mkdirs();
-        if (file.exists()) {
+        if ( file.exists() ) {
             deleteDir(file);
         }
 
@@ -107,7 +113,7 @@ public class GenerateFileImpl implements GenerateFile {
             System.out.println("文件生成失败..." + e);
             throw new RuntimeException("文件生成失败..." + e);
         } finally {
-            if (connection != null) {
+            if ( connection != null ) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
@@ -210,7 +216,7 @@ public class GenerateFileImpl implements GenerateFile {
 
         //创建文件夹
         File directory = new File(genPath);
-        if (!directory.exists()) {
+        if ( !directory.exists() ) {
             directory.mkdirs();
         }
 
@@ -262,15 +268,15 @@ public class GenerateFileImpl implements GenerateFile {
         map.put("entityName", entityName);
         map.put("entityPackageName", entityPackageName);
         for (BaseDomain domain : domainList) {
-            if ("id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
+            if ( "id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
                     || "create_user".equals(domain.getColumName()) || "update_time".equals(domain.getColumName())
-                    || "update_user".equals(domain.getColumName())) {
+                    || "update_user".equals(domain.getColumName()) ) {
                 continue;
             }
-            if ("Date".equals(sqlType2JavaType(domain.getColumType())) && dataFlag) {
+            if ( "Date".equals(sqlType2JavaType(domain.getColumType())) && dataFlag ) {
                 importSb.append("import java.util.Date;\n");
                 dataFlag = false;
-            } else if ("BigDecimal".equals(sqlType2JavaType(domain.getColumType())) && bigdFlag) {
+            } else if ( "BigDecimal".equals(sqlType2JavaType(domain.getColumType())) && bigdFlag ) {
                 importSb.append("import java.math.BigDecimal;\n");
                 bigdFlag = false;
             }
@@ -354,9 +360,9 @@ public class GenerateFileImpl implements GenerateFile {
         map.put("entityName", entityName);
         map.put("low_entityName", lowEntityName);
         for (BaseDomain domain : domainList) {
-            if ("id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
+            if ( "id".equals(domain.getColumName()) || "create_time".equals(domain.getColumName())
                     || "create_name".equals(domain.getColumName()) || "update_time".equals(domain.getColumName())
-                    || "update_name".equals(domain.getColumName())) {
+                    || "update_name".equals(domain.getColumName()) ) {
                 continue;
             }
 
@@ -427,26 +433,26 @@ public class GenerateFileImpl implements GenerateFile {
      */
     private String sqlType2JavaType(String sqlType) {
 
-        if (sqlType.equalsIgnoreCase("bit")) {
+        if ( sqlType.equalsIgnoreCase("bit") ) {
             return "Boolean";
-        } else if (sqlType.equalsIgnoreCase("tinyint") || sqlType.equalsIgnoreCase("smallint")
-                || sqlType.equalsIgnoreCase("int")) {
+        } else if ( sqlType.equalsIgnoreCase("tinyint") || sqlType.equalsIgnoreCase("smallint")
+                || sqlType.equalsIgnoreCase("int") ) {
             return "Integer";
-        } else if (sqlType.equalsIgnoreCase("bigint")) {
+        } else if ( sqlType.equalsIgnoreCase("bigint") ) {
             return "Long";
-        } else if (sqlType.equalsIgnoreCase("float")) {
+        } else if ( sqlType.equalsIgnoreCase("float") ) {
             return "Double";
-        } else if (sqlType.equalsIgnoreCase("decimal") || sqlType.equalsIgnoreCase("numeric")
+        } else if ( sqlType.equalsIgnoreCase("decimal") || sqlType.equalsIgnoreCase("numeric")
                 || sqlType.equalsIgnoreCase("real") || sqlType.equalsIgnoreCase("money")
-                || sqlType.equalsIgnoreCase("smallmoney")) {
+                || sqlType.equalsIgnoreCase("smallmoney") ) {
             return "BigDecimal";
-        } else if (sqlType.equalsIgnoreCase("varchar") || sqlType.equalsIgnoreCase("char")
+        } else if ( sqlType.equalsIgnoreCase("varchar") || sqlType.equalsIgnoreCase("char")
                 || sqlType.equalsIgnoreCase("nvarchar") || sqlType.equalsIgnoreCase("nchar")
-                || sqlType.equalsIgnoreCase("text") || sqlType.equalsIgnoreCase("varchar2")) {
+                || sqlType.equalsIgnoreCase("text") || sqlType.equalsIgnoreCase("varchar2") ) {
             return "String";
-        } else if (sqlType.equalsIgnoreCase("datetime") || sqlType.equalsIgnoreCase("date")) {
+        } else if ( sqlType.equalsIgnoreCase("datetime") || sqlType.equalsIgnoreCase("date") ) {
             return "Date";
-        } else if (sqlType.equalsIgnoreCase("image")) {
+        } else if ( sqlType.equalsIgnoreCase("image") ) {
             return "Blod";
         }
         return "String";
@@ -459,7 +465,7 @@ public class GenerateFileImpl implements GenerateFile {
      * @return
      */
     private void deleteDir(File dir) {
-        if (dir.isDirectory()) {
+        if ( dir.isDirectory() ) {
             String[] children = dir.list();
             //递归删除目录中的子目录下
             for (int i = 0; i < children.length; i++) {
